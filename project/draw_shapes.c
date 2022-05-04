@@ -14,8 +14,14 @@ rectangle rect1;
 /* int old_cir_y, old_cir_x; */
 /* int r; */
 circle cir1;
-
+int i = 2;
 u_int background_color = COLOR_BLUE;
+char score = '0';
+int update_score = 0;
+int draw_score = 0;
+void message() {
+  drawChar5x7(118, 152, score, COLOR_WHITE, COLOR_BLACK);
+}
 
 void
 init_shapes(void)
@@ -34,6 +40,8 @@ init_shapes(void)
   cir1.old_cir_y = 60;
   cir1.old_cir_x = screenWidth / 2;
   cir1.r = 20;
+
+  message();
 }
 
 void
@@ -53,9 +61,21 @@ draw_moving_shapes(void)
   
   // draw and update the circle
   moving_circle();
-  rect1.height +=2;
+  //if(rect1.height >= (screenHeight / 3) )
+  //i *= -1;
+  rect1.height +=i;
   //rect1.rect_row += 2;
   draw_rectangle();
+
+  if (draw_score) {
+    draw_score = 0;
+    score++;
+    message();
+  }
+  else if(update_score) {
+    draw_score = 1;
+    update_score--;
+  }
   // draw the triangle
   //draw_triangle();
 }
@@ -216,10 +236,12 @@ moving_circle(void)
        (cir1.cir_x - cir1.r) <= 0 ) {
     // top or bottom hit, reverse x velocity
     x_vel = x_vel * -1;
+    update_score++;
   }
   if ( ( cir1.cir_y - cir1.r ) <= ( rect1.rect_row + (rect1.height / 2) )  ||   // left boundary
        ( cir1.cir_y + cir1.r ) >= screenHeight) { // right boundary
     // right or left hit, reverse y velocity
     y_vel = y_vel * -1;
+    update_score++;
   }
 }
