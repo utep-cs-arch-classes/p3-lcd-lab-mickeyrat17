@@ -7,6 +7,7 @@
 // global vars for the rectangle
 rectangle rect1;
 void circle_color_switch_listener(void);
+void circle_color_change(void);
 
 // global vars for the circle
 circle cir1;
@@ -19,6 +20,7 @@ int update_score = 0;
 int draw_score = 0;
 
 u_int circle_color = COLOR_SIENNA;
+int circle_switch = -1;
 
 void message() {
   drawChar5x7(118, 152, score, COLOR_WHITE, COLOR_BLACK);
@@ -260,14 +262,33 @@ moving_circle(void)
 void circle_color_switch_listener(void)
 {
   if(switch1_down) {
-    circle_color = COLOR_BLACK;
+    circle_switch = 0;
   }
   else if(switch2_down) {
-    circle_color = COLOR_RED;
+    circle_switch = 1;
   }
   else if(switch3_down) {
-    circle_color = COLOR_GREEN;
+    circle_switch = 2;
   }
+  else {
+    circle_switch = -1;
+  }
+  circle_color_change();
 }
 
-//void circle_color(void) {}
+void circle_color_change(void) {
+  switch(circle_switch){
+    case 0:
+      circle_color = COLOR_BLACK;
+      break;
+    case 1:
+      circle_color = COLOR_RED;
+      break;
+    case 2:
+      circle_color = COLOR_GREEN;
+      break;
+    default:
+      circle_color = COLOR_SIENNA;
+      break;
+  }
+}
