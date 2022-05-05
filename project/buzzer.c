@@ -1,12 +1,4 @@
 #include <msp430.h>
-#include <libTimer.h>
-#include "lcdutils.h"
-#include "lcddraw.h"
-#include "draw_shapes.h"
-#include "buzzer.h"
-// WARNING: LCD DISPLAY USES P1.0.  Do not touch!!! 
-
-#include <msp430.h>
 #include "libTimer.h"
 #include "buzzer.h"
 
@@ -32,16 +24,8 @@ void buzzer_set_period(short cycles) /* buzzer clock = 2MHz.  (period of 1k resu
   CCR1 = cycles >> 1;		/* one half cycle */
 }
 
-void main()
-{
-  configureClocks();
-  lcd_init();
-  //buzzer_init();
-  clearScreen(background_color);
-  buzzer_init();
-  init_shapes();
 
-  enableWDTInterrupts();
+    
+    
+  
 
-  or_sr(0x18);	/**< CPU off , GIE on*/
-}

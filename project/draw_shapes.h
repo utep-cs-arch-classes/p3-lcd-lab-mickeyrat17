@@ -2,7 +2,7 @@
 #define _DRAW_SHAPES_H_
 
 #include <lcdutils.h>
-
+#include "buzzer.h"
 typedef struct rect_st {
   int rect_row;
   int rect_col;

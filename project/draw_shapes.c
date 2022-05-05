@@ -67,14 +67,19 @@ draw_moving_shapes(void)
   //rect1.rect_row += 2;
   draw_rectangle();
 
-  if (draw_score) {
-    draw_score = 0;
+  if (draw_score ) {
+    draw_score--;
     score++;
     message();
+    buzzer_set_period(2000);
   }
   else if(update_score) {
-    draw_score = 1;
+    draw_score++;
     update_score--;
+    //buzzer_set_period(2000);
+  }
+  else {
+    buzzer_set_period(0);
   }
   // draw the triangle
   //draw_triangle();
