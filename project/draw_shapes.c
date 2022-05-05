@@ -2,23 +2,24 @@
 #include "lcdutils.h"
 #include "lcddraw.h"
 #include "draw_shapes.h"
+#include "switches.h"
 
 // global vars for the rectangle
 rectangle rect1;
-/* int rect_row, rect_col; */
-/* int old_rect_row, old_rect_col; */
-/* u_char height, width; */
+void circle_color_switch_listener(void);
 
 // global vars for the circle
-/* int cir_y, cir_x; */
-/* int old_cir_y, old_cir_x; */
-/* int r; */
 circle cir1;
 int i = 2;
 u_int background_color = COLOR_BLUE;
+
+// score update and buzzer variables
 char score = '0';
 int update_score = 0;
 int draw_score = 0;
+
+u_int circle_color = COLOR_SIENNA;
+
 void message() {
   drawChar5x7(118, 152, score, COLOR_WHITE, COLOR_BLACK);
 }
@@ -60,6 +61,7 @@ draw_moving_shapes(void)
   //moving_rectangle(&rect1);
   
   // draw and update the circle
+  circle_color_switch_listener();
   moving_circle();
   //if(rect1.height >= (screenHeight / 3) )
   //i *= -1;
@@ -82,7 +84,6 @@ draw_moving_shapes(void)
   else if(update_score) {
     draw_score++;
     update_score--;
-    //buzzer_set_period(2000);
   }
   else {
     buzzer_set_period(0);
@@ -223,15 +224,14 @@ draw_circle(int x, int y, int r, u_int color)
 
 void
 moving_circle(void)
-{
+{ 
   static int x_vel = 5;
   static int y_vel = 10;
   
-  u_int color = COLOR_SIENNA;
-
+  
 
   // draw at the new position
-  draw_circle(cir1.cir_x, cir1.cir_y, cir1.r, color);
+  draw_circle(cir1.cir_x, cir1.cir_y, cir1.r, circle_color);
 
   // save current position
   cir1.old_cir_x = cir1.cir_x;
@@ -256,3 +256,18 @@ moving_circle(void)
     update_score++;
   }
 }
+
+void circle_color_switch_listener(void)
+{
+  if(switch1_down) {
+    circle_color = COLOR_BLACK;
+  }
+  else if(switch2_down) {
+    circle_color = COLOR_RED;
+  }
+  else if(switch3_down) {
+    circle_color = COLOR_GREEN;
+  }
+}
+
+//void circle_color(void) {}

@@ -3,6 +3,7 @@
 
 #include <lcdutils.h>
 #include "buzzer.h"
+#include "switches.h"
 typedef struct rect_st {
   int rect_row;
   int rect_col;
