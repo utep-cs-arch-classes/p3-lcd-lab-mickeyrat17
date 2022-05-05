@@ -4,10 +4,16 @@
 #include "draw_shapes.h"
 #include "switches.h"
 
+//global colors
+u_int black = COLOR_BLACK;
+u_int red = COLOR_RED;
+u_int green = COLOR_GREEN;
+u_int sienna = COLOR_SIENNA;
+
+
 // global vars for the rectangle
 rectangle rect1;
 void circle_color_switch_listener(void);
-void circle_color_change(void);
 
 // global vars for the circle
 circle cir1;
@@ -19,9 +25,11 @@ char score = '0';
 int update_score = 0;
 int draw_score = 0;
 
+//color switch variables
+int color_switch = -1;
 u_int circle_color = COLOR_SIENNA;
-int circle_switch = -1;
 
+// Displays number of bounces
 void message() {
   drawChar5x7(118, 152, score, COLOR_WHITE, COLOR_BLACK);
 }
@@ -50,6 +58,8 @@ init_shapes(void)
 void
 draw_moving_shapes(void)
 {
+  // if switch 4 is pressed, pause
+  if (switch4_down) return;
   int left_col = rect1.old_rect_col - (rect1.width / 2);
   int top_row  = rect1.old_rect_row - (rect1.height / 2);
 
@@ -59,18 +69,15 @@ draw_moving_shapes(void)
   // blank out the old circle
   draw_circle(cir1.old_cir_x, cir1.old_cir_y, cir1.r, background_color);
 
-  // draw and update the rectangle
-  //moving_rectangle(&rect1);
-  
   // draw and update the circle
   circle_color_switch_listener();
   moving_circle();
-  //if(rect1.height >= (screenHeight / 3) )
-  //i *= -1;
+
+  //increase size of rectangle
   rect1.height +=i;
-  //rect1.rect_row += 2;
   draw_rectangle();
 
+  // update score and buzz when wall is hit
   if (draw_score && update_score) {
     update_score--;
     score++;
@@ -90,8 +97,6 @@ draw_moving_shapes(void)
   else {
     buzzer_set_period(0);
   }
-  // draw the triangle
-  //draw_triangle();
 }
 
 void
@@ -105,71 +110,6 @@ draw_rectangle(void)
 
   fillRectangle(left_col, top_row, rect1.width, rect1.height, color);
 }
-
-
-void
-moving_rectangle(rectangle *to_draw)
-{
-  static int x_vel = 10;
-  static int y_vel = 5;
-
-  int left_col = to_draw->rect_col - (to_draw->width / 2);
-  int top_row  = to_draw->rect_row - (to_draw->height / 2);
-
-  unsigned int blue = 16, green = 0, red = 31;
-  unsigned int color = (blue << 11) | (green << 5) | red;
-
-  // draw rectangle at current position
-  fillRectangle(left_col, top_row, to_draw->width, to_draw->height, color);
-
-  // save current position
-  to_draw->old_rect_row = to_draw->rect_row;
-  to_draw->old_rect_col = to_draw->rect_col;
-
-  // update position
-  to_draw->rect_row += y_vel;
-  to_draw->rect_col += x_vel;
-
-  // check boundaries, see if rectangle has hit the edges
-  if ( ( to_draw->rect_col - (to_draw->width / 2) ) <= 0 ||            // left boundary
-       ( to_draw->rect_col + (to_draw->width / 2) ) >= screenWidth ) { // right boundary
-    // right or left hit, reverse x velocity
-    x_vel = x_vel * -1;
-  }
-  if ( (to_draw->rect_row + to_draw->height / 2) >= screenHeight ||   // bottom
-       (to_draw->rect_row - to_draw->height / 2) <= 0) {              // top
-    // top or bottom hit, reverse y velocity
-    y_vel = y_vel * -1;
-  }
-
-}
-
-
-void
-draw_triangle(void)
-{
-  u_char height = 40;
-  u_char row = 80, col = screenWidth / 2;
-
-  u_char step = 0;
-
-  unsigned int blue = 31, green = 0, red = 31;
-
-  unsigned int color = (blue << 11) | (green << 5) | red;
-
-  // draw a n equilateral triangle
-  // starts at the top and works down
-  // at the first row the width is 1, second 2 and so on
-  for (step = 0; step < height; step++) {
-    // left side of triangle
-    u_char start_col = col - (step / 2);
-    // right side of triangle
-    u_char end_col   = col + (step / 2);
-    u_char width     = end_col - start_col;
-    fillRectangle(col - (step / 2), row+step, width, 1, color);
-  }
-}
-
 void
 drawHorizontalLine(u_int x_start, u_int x_end, u_int y, u_int colorBGR)
 {
@@ -228,9 +168,7 @@ void
 moving_circle(void)
 { 
   static int x_vel = 5;
-  static int y_vel = 10;
-  
-  
+  static int y_vel = 10;  
 
   // draw at the new position
   draw_circle(cir1.cir_x, cir1.cir_y, cir1.r, circle_color);
@@ -258,37 +196,21 @@ moving_circle(void)
     update_score++;
   }
 }
-
+ 
 void circle_color_switch_listener(void)
 {
+  // color change based on switch pressed 
   if(switch1_down) {
-    circle_switch = 0;
+    color_switch = 0;
   }
   else if(switch2_down) {
-    circle_switch = 1;
+    color_switch = 1;
   }
   else if(switch3_down) {
-    circle_switch = 2;
+    color_switch = 2;
   }
   else {
-    circle_switch = -1;
+    color_switch = -1;
   }
-  circle_color_change();
-}
-
-void circle_color_change(void) {
-  switch(circle_switch){
-    case 0:
-      circle_color = COLOR_BLACK;
-      break;
-    case 1:
-      circle_color = COLOR_RED;
-      break;
-    case 2:
-      circle_color = COLOR_GREEN;
-      break;
-    default:
-      circle_color = COLOR_SIENNA;
-      break;
-  }
+  change_color(color_switch);
 }

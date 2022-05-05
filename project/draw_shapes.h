@@ -21,7 +21,17 @@ typedef struct cir_st {
   int r;
 } circle;
 
+extern u_int black;
+extern u_int red;
+extern u_int green;
+extern u_int sienna;
+
 extern u_int background_color;
+//extern int color_switch;
+extern u_int circle_color;
+
+// intialize color change method
+void change_color(int);
 
 /* initializes shape positions */
 void init_shapes(void);

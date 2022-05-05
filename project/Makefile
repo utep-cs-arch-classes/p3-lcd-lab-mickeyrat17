@@ -8,13 +8,19 @@ LDFLAGS		= -L../lib -L/opt/ti/msp430_gcc/include/
 CC              = msp430-elf-gcc
 AS              = msp430-elf-gcc -mmcu=${CPU} -c
 
-all: moving_demo.elf
+all: moving_demo.elf moving_demo_s.elf
 
 #additional rules for files
-moving_demo.elf: ${COMMON_OBJECTS} moving_demo.o
-	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^ -lTimer -lLcd 
+moving_demo.elf: ${COMMON_OBJECTS} change_color.o moving_demo.o switches.o
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^ -lTimer -lLcd
 
-load: moving_demo.elf
+moving_demo_s.elf: ${COMMON_OBJECTS} change_color_s.o moving_demo.o switches.o
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^ -lTimer -lLcd
+
+load_c: moving_demo.elf
+	msp430loader.sh $^
+
+load_s: moving_demo_s.elf
 	msp430loader.sh $^
 
 clean:
