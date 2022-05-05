@@ -67,7 +67,13 @@ draw_moving_shapes(void)
   //rect1.rect_row += 2;
   draw_rectangle();
 
-  if (draw_score ) {
+  if (draw_score && update_score) {
+    update_score--;
+    score++;
+    message();
+    buzzer_set_period(2000);
+  }
+  else if (draw_score ) {
     draw_score--;
     score++;
     message();
